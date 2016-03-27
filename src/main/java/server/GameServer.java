@@ -20,14 +20,14 @@ public class GameServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup,workGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG,1024)//最大客户端连接数为1024
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            //添加业务处理handler
                             socketChannel.pipeline().addLast(new ServerHandler());
                         }
-                    });
+                    })
+                    //.option(ChannelOption.SO_BACKLOG,1024)//最大客户端连接数为1024
+                    .option(ChannelOption.TCP_NODELAY,true);
             ChannelFuture f = b.bind(port).sync();
             if(f.isSuccess()){
                 System.out.println("Server starts success at port:"+port);
